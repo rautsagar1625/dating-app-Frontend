@@ -1,0 +1,68 @@
+{
+  "cli": {
+    "version": ">= 12.0.0",
+    "requireCommit": true
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "APP_ENV": "development",
+        "EAS_PROJECT_ID": "$EAS_PROJECT_ID"
+      },
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "APP_ENV": "staging",
+        "API_URL": "https://api-staging.velvetapp.com/api",
+        "SOCKET_URL": "https://api-staging.velvetapp.com",
+        "CDN_URL": "https://cdn-staging.velvetapp.com",
+        "EAS_PROJECT_ID": "$EAS_PROJECT_ID",
+        "SENTRY_DSN": "$SENTRY_DSN",
+        "MIXPANEL_TOKEN": "$MIXPANEL_TOKEN"
+      },
+      "ios": {
+        "simulator": false
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "APP_ENV": "production",
+        "API_URL": "https://api.velvetapp.com/api",
+        "SOCKET_URL": "https://api.velvetapp.com",
+        "CDN_URL": "https://cdn.velvetapp.com",
+        "EAS_PROJECT_ID": "$EAS_PROJECT_ID",
+        "SENTRY_DSN": "$SENTRY_DSN",
+        "MIXPANEL_TOKEN": "$MIXPANEL_TOKEN"
+      },
+      "ios": {
+        "resourceClass": "m-medium"
+      },
+      "android": {
+        "buildType": "app-bundle"
+      }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "projectdating2026@gmail.com",
+        "ascAppId": "",
+        "appleTeamId": ""
+      },
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account.json",
+        "track": "internal"
+      }
+    }
+  }
+}
