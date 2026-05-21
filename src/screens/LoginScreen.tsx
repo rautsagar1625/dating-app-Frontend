@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   Platform,
   Dimensions,
   Alert,
+  Animated,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -31,6 +32,25 @@ export default function LoginScreen({ navigation }: Props) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  // Entrance animation
+  const fadeAnim      = useRef(new Animated.Value(0)).current;
+  const slideAnim     = useRef(new Animated.Value(28)).current;
+  const headerFade    = useRef(new Animated.Value(0)).current;
+  const headerSlide   = useRef(new Animated.Value(16)).current;
+
+  useEffect(() => {
+    Animated.stagger(80, [
+      Animated.parallel([
+        Animated.timing(headerFade,  { toValue: 1, duration: 420, useNativeDriver: true }),
+        Animated.spring(headerSlide, { toValue: 0, damping: 20, stiffness: 160, useNativeDriver: true }),
+      ]),
+      Animated.parallel([
+        Animated.timing(fadeAnim,  { toValue: 1, duration: 420, useNativeDriver: true }),
+        Animated.spring(slideAnim, { toValue: 0, damping: 18, stiffness: 150, useNativeDriver: true }),
+      ]),
+    ]).start();
+  }, []);
 
   const login = useAuthStore((s) => s.login);
   const { syncBalance } = useWalletStore();
@@ -68,13 +88,14 @@ export default function LoginScreen({ navigation }: Props) {
   return (
     <View style={styles.root}>
       <LinearGradient
-        colors={['#1A0A2E', '#0F0F0F', '#0F0F0F']}
-        locations={[0, 0.4, 1]}
+        colors={['#1A0A2E', '#0D0A1E', '#0F0F0F']}
+        locations={[0, 0.35, 1]}
         style={StyleSheet.absoluteFillObject}
       />
       {/* Decorative glow orbs */}
       <View style={styles.orb1} />
       <View style={styles.orb2} />
+      <View style={styles.orb3} />
 
       <KeyboardAvoidingView
         style={styles.flex}
@@ -86,10 +107,13 @@ export default function LoginScreen({ navigation }: Props) {
           showsVerticalScrollIndicator={false}
         >
           {/* Brand */}
-          <View style={styles.header}>
-            <View style={[styles.logoWrapper, SHADOWS.glow]}>
+          <Animated.View style={[styles.header, {
+            opacity: headerFade,
+            transform: [{ translateY: headerSlide }],
+          }]}>
+            <View style={[styles.logoWrapper, SHADOWS.glowStrong]}>
               <LinearGradient
-                colors={COLORS.gradient.primary}
+                colors={COLORS.gradient.primaryVibrant}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.logoGradient}
@@ -99,12 +123,15 @@ export default function LoginScreen({ navigation }: Props) {
             </View>
             <Text style={styles.brand}>Velvet</Text>
             <Text style={styles.tagline}>Privacy. Discretion. Connection.</Text>
-          </View>
+          </Animated.View>
 
           {/* Glass card form */}
-          <View style={[styles.card, SHADOWS.card]}>
+          <Animated.View style={[styles.card, SHADOWS.card, {
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }],
+          }]}>
             <LinearGradient
-              colors={['rgba(123,47,247,0.12)', 'rgba(26,26,26,0)']}
+              colors={['rgba(123,47,247,0.14)', 'rgba(26,26,26,0)']}
               style={StyleSheet.absoluteFillObject}
             />
             <Text style={styles.title}>Welcome Back</Text>
@@ -146,7 +173,7 @@ export default function LoginScreen({ navigation }: Props) {
                 <Text style={styles.registerLink}>Create one</Text>
               </Text>
             </TouchableOpacity>
-          </View>
+          </Animated.View>
 
           <Text style={styles.disclaimer}>
             By continuing, you agree to our Terms of Service and Privacy Policy.
@@ -173,10 +200,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: height * 0.35,
     right: -100,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: 'rgba(241,7,163,0.12)',
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    backgroundColor: 'rgba(241,7,163,0.13)',
+  },
+  orb3: {
+    position: 'absolute',
+    bottom: 60,
+    left: -50,
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: 'rgba(123,47,247,0.10)',
   },
   container: {
     flexGrow: 1,
