@@ -633,4 +633,107 @@ export const notifPrefsApi = {
     api.put<ApiResponse<NotificationPrefs>>('/settings/notifications', body),
 };
 
+// ---------------------------------------------------------------------------
+// Profile Completion
+// ---------------------------------------------------------------------------
+
+export interface CompletionStep {
+  label: string;
+  done:  boolean;
+}
+
+export interface ProfileCompletion {
+  score: number;
+  steps: CompletionStep[];
+}
+
+export const profileCompletionApi = {
+  get: () => api.get<ApiResponse<ProfileCompletion>>('/profile/completion'),
+};
+
+// ---------------------------------------------------------------------------
+// Gifts
+// ---------------------------------------------------------------------------
+
+export interface GiftCatalogItem {
+  id:    string;
+  name:  string;
+  emoji: string;
+  cost:  number;
+}
+
+export interface ReceivedGift {
+  id:        string;
+  giftEmoji: string;
+  giftName:  string;
+  giftCost:  number;
+  message:   string | null;
+  createdAt: string;
+  sender: {
+    id:        string;
+    username:  string;
+    avatarUrl: string | null;
+  };
+}
+
+export const giftsApi = {
+  getCatalog:    () =>
+    api.get<ApiResponse<GiftCatalogItem[]>>('/gifts/catalog'),
+
+  send: (body: { receiverId: string; giftId: string; message?: string }) =>
+    api.post<ApiResponse<{ id: string; giftEmoji: string; giftName: string; createdAt: string }>>('/gifts/send', body),
+
+  getReceived: (page = 1) =>
+    api.get<PaginatedResponse<ReceivedGift[]>>('/gifts/received', { params: { page, limit: 20 } }),
+};
+
+// ---------------------------------------------------------------------------
+// News
+// ---------------------------------------------------------------------------
+
+export interface NewsPost {
+  id:          string;
+  title:       string;
+  content:     string;
+  imageUrl:    string | null;
+  category:    string;
+  publishedAt: string | null;
+}
+
+export const newsApi = {
+  list: (page = 1, category?: string) =>
+    api.get<PaginatedResponse<NewsPost[]>>('/news', { params: { page, limit: 20, category } }),
+
+  get: (id: string) =>
+    api.get<ApiResponse<NewsPost>>(`/news/${id}`),
+};
+
+// ---------------------------------------------------------------------------
+// Notes (Notebook)
+// ---------------------------------------------------------------------------
+
+export interface Note {
+  id:        string;
+  title:     string;
+  content:   string;
+  color:     string;
+  isPinned:  boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const notesApi = {
+  list: () =>
+    api.get<ApiResponse<Note[]>>('/notes'),
+
+  create: (body: { title: string; content: string; color?: string; isPinned?: boolean }) =>
+    api.post<ApiResponse<Note>>('/notes', body),
+
+  update: (id: string, body: Partial<{ title: string; content: string; color: string; isPinned: boolean }>) =>
+    api.put<ApiResponse<Note>>(`/notes/${id}`, body),
+
+  delete: (id: string) =>
+    api.delete<ApiResponse<void>>(`/notes/${id}`),
+};
+
 export default api;

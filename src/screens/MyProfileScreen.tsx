@@ -29,7 +29,8 @@ import { GradientButton } from '../components/GradientButton';
 import { Modal } from '../components/Modal';
 import { SkeletonBone } from '../components/SkeletonLoader';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../utils/theme';
-import { authApi, profileApi, walletApi, chatApi, photosApi, visitsApi, likesApi, favoritesApi, Photo } from '../services/api';
+import { authApi, profileApi, walletApi, chatApi, photosApi, visitsApi, likesApi, favoritesApi, profileCompletionApi, Photo } from '../services/api';
+import { ProfileCompletionCard } from '../components/ProfileCompletionCard';
 
 type Nav = CompositeNavigationProp<
   BottomTabNavigationProp<MainTabParamList>,
@@ -37,7 +38,7 @@ type Nav = CompositeNavigationProp<
 >;
 
 type MenuItem = {
-  iconName: 'diamond-outline' | 'notifications-outline' | 'lock-closed-outline' | 'help-circle-outline' | 'star-outline' | 'shield-checkmark-outline';
+  iconName: 'diamond-outline' | 'notifications-outline' | 'lock-closed-outline' | 'help-circle-outline' | 'star-outline' | 'shield-checkmark-outline' | 'book-outline' | 'newspaper-outline' | 'gift-outline';
   label: string;
   sublabel: string;
   screen?: keyof AppStackParamList;
@@ -45,6 +46,9 @@ type MenuItem = {
 
 const MENU_ITEMS: MenuItem[] = [
   { iconName: 'diamond-outline',       label: 'Subscription',     sublabel: 'Manage plan & credits',   screen: 'Subscription' },
+  { iconName: 'gift-outline',          label: 'Gifts',            sublabel: 'Gifts you received',      screen: 'Gifts' },
+  { iconName: 'book-outline',          label: 'Notebook',         sublabel: 'Your private notes',      screen: 'Notebook' },
+  { iconName: 'newspaper-outline',     label: 'News',             sublabel: 'Updates from Velvet',     screen: 'News' },
   { iconName: 'notifications-outline', label: 'Notifications',    sublabel: 'Manage alerts' },
   { iconName: 'lock-closed-outline',   label: 'Privacy Settings', sublabel: 'Control who sees you',    screen: 'PrivacySettings' },
   { iconName: 'help-circle-outline',   label: 'Help & Support',   sublabel: 'Get assistance' },
@@ -70,7 +74,7 @@ export default function MyProfileScreen() {
   // ── Parallel data queries (replaces 7 fire-and-forget useEffect calls) ───
   const [
     meQuery, walletQuery, chatsQuery, photosQuery,
-    visitorsQuery, likesQuery, favoritesQuery,
+    visitorsQuery, likesQuery, favoritesQuery, completionQuery,
   ] = useQueries({
     queries: [
       {
@@ -111,6 +115,11 @@ export default function MyProfileScreen() {
         queryKey: ['favorites', 'preview'],
         queryFn: () => favoritesApi.getAll({ limit: 3 }).then((r) => r.data.data),
         staleTime: 2 * 60 * 1000,
+      },
+      {
+        queryKey: ['profile', 'completion'],
+        queryFn: () => profileCompletionApi.get().then((r) => r.data.data),
+        staleTime: 60 * 1000,
       },
     ],
   });
@@ -276,6 +285,15 @@ export default function MyProfileScreen() {
               ))}
             </View>
           </View>
+
+          {/* Profile completion nudge */}
+          {completionQuery.data && completionQuery.data.score < 100 && (
+            <ProfileCompletionCard
+              score={completionQuery.data.score}
+              steps={completionQuery.data.steps}
+              onPress={() => setIsEditing(true)}
+            />
+          )}
 
           {/* Visitors teaser */}
           <TouchableOpacity

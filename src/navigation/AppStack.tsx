@@ -20,6 +20,9 @@ import AccountSettingsScreen from '../screens/AccountSettingsScreen';
 import DeleteAccountScreen from '../screens/DeleteAccountScreen';
 import BlockedUsersScreen from '../screens/BlockedUsersScreen';
 import PhotoAccessRequestsScreen from '../screens/PhotoAccessRequestsScreen';
+import NotebookScreen from '../screens/NotebookScreen';
+import NewsScreen from '../screens/NewsScreen';
+import GiftsScreen from '../screens/GiftsScreen';
 import { QuickExitButton } from '../components/QuickExitButton';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -52,6 +55,9 @@ export default function AppStack() {
         <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
         <Stack.Screen name="BlockedUsers" component={BlockedUsersScreen} />
         <Stack.Screen name="PhotoAccessRequests" component={PhotoAccessRequestsScreen} />
+        <Stack.Screen name="Notebook" component={NotebookScreen} />
+        <Stack.Screen name="News" component={NewsScreen} />
+        <Stack.Screen name="Gifts" component={GiftsScreen} />
       </Stack.Navigator>
       <QuickExitButton />
       <BetaFeedback enabled />

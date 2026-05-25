@@ -20,6 +20,7 @@ import { AppStackParamList } from '../navigation/types';
 import { GradientButton } from '../components/GradientButton';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../utils/theme';
 import { usersApi, likesApi, photosApi, visitsApi, chatApi, favoritesApi, blocksApi, reportsApi, BrowseUser, Photo } from '../services/api';
+import { GiftPickerModal } from './GiftsScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useWalletStore } from '../store/walletStore';
 import { formatLastSeen } from '../utils/formatLastSeen';
@@ -85,6 +86,7 @@ export default function ProfileDetailScreen({ navigation, route }: Props) {
   const [photosAccessGranted, setPhotosAccessGranted] = useState(false);
   const [unlockLoading, setUnlockLoading] = useState(false);
   const [chatLoading, setChatLoading] = useState(false);
+  const [showGiftPicker, setShowGiftPicker] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -504,6 +506,17 @@ export default function ProfileDetailScreen({ navigation, route }: Props) {
             style={styles.chatBtn}
           />
 
+          {/* Send Gift */}
+          <TouchableOpacity
+            onPress={() => setShowGiftPicker(true)}
+            style={styles.iconBtn}
+            activeOpacity={0.85}
+          >
+            <View style={styles.iconBtnInner}>
+              <Text style={{ fontSize: 18 }}>🎁</Text>
+            </View>
+          </TouchableOpacity>
+
           {/* Save / Favorite */}
           <TouchableOpacity
             onPress={handleFavorite}
@@ -531,6 +544,14 @@ export default function ProfileDetailScreen({ navigation, route }: Props) {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* Gift picker */}
+      <GiftPickerModal
+        visible={showGiftPicker}
+        receiverId={userId}
+        onClose={() => setShowGiftPicker(false)}
+        onSent={() => setShowGiftPicker(false)}
+      />
     </View>
   );
 }

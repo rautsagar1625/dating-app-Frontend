@@ -23,6 +23,10 @@ export type AppStackParamList = {
   DeleteAccount:        undefined;
   BlockedUsers:         undefined;
   PhotoAccessRequests:  undefined;
+  // New features
+  Notebook:             undefined;
+  News:                 undefined;
+  Gifts:                undefined;
 };
 
 export type MainTabParamList = {
