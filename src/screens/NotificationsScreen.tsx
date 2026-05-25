@@ -2,27 +2,22 @@ import React, { useCallback } from 'react';
 import {
   View, Text, TouchableOpacity, StyleSheet, Alert,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppList } from '../components/AppList';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { useFocusEffect } from '@react-navigation/native';
-import { CompositeNavigationProp } from '@react-navigation/native';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { MainTabParamList, AppStackParamList } from '../navigation/types';
+import { AppStackParamList } from '../navigation/types';
 import { notificationsApi, chatApi, usersApi, type NotificationItem } from '../services/api';
 import { useNotificationStore } from '../store/notificationStore';
 import { COLORS, FONTS, SPACING, SHADOWS } from '../utils/theme';
 import { NotificationRowSkeleton } from '../components/SkeletonLoader';
 import { AnimatedPressable } from '../components/AnimatedPressable';
 
-type Nav = CompositeNavigationProp<
-  BottomTabNavigationProp<MainTabParamList, 'Notifications'>,
-  NativeStackNavigationProp<AppStackParamList>
->;
+type Nav = NativeStackNavigationProp<AppStackParamList>;
 
 const TYPE_CONFIG: Record<
   NotificationItem['type'],
@@ -160,9 +155,18 @@ export default function NotificationsScreen() {
   // ── UI ────────────────────────────────────────────────────────────────────
 
   return (
+    <View style={styles.root}>
+      <LinearGradient
+        colors={['#1A0A2E', '#0F0F0F', '#0F0F0F']}
+        locations={[0, 0.3, 1]}
+        style={StyleSheet.absoluteFillObject}
+      />
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Notifications</Text>
+        <AnimatedPressable onPress={() => navigation.goBack()} style={styles.backBtn} pressedScale={0.9}>
+          <Ionicons name="arrow-back" size={22} color={COLORS.text} />
+        </AnimatedPressable>
+        <Text style={styles.title}>Activity</Text>
         {hasUnread && (
           <AnimatedPressable
             onPress={() => markReadMutation.mutate('all')}
@@ -201,17 +205,20 @@ export default function NotificationsScreen() {
         />
       )}
     </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.background },
+  root:      { flex: 1, backgroundColor: COLORS.background },
+  container: { flex: 1 },
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: SPACING.md, paddingTop: SPACING.md, paddingBottom: SPACING.sm,
     borderBottomWidth: 1, borderBottomColor: COLORS.border,
   },
-  title: { fontSize: FONTS.sizes.xl, fontWeight: '800', color: COLORS.text },
+  backBtn: { padding: 4, marginRight: SPACING.sm },
+  title: { flex: 1, fontSize: FONTS.sizes.xl, fontWeight: '800', color: COLORS.text },
   markAllBtn: {
     paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs,
     borderRadius: 8, backgroundColor: COLORS.card,

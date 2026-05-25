@@ -23,6 +23,7 @@ import PhotoAccessRequestsScreen from '../screens/PhotoAccessRequestsScreen';
 import NotebookScreen from '../screens/NotebookScreen';
 import NewsScreen from '../screens/NewsScreen';
 import GiftsScreen from '../screens/GiftsScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
 import { QuickExitButton } from '../components/QuickExitButton';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -58,6 +59,7 @@ export default function AppStack() {
         <Stack.Screen name="Notebook" component={NotebookScreen} />
         <Stack.Screen name="News" component={NewsScreen} />
         <Stack.Screen name="Gifts" component={GiftsScreen} />
+        <Stack.Screen name="Notifications" component={NotificationsScreen} />
       </Stack.Navigator>
       <QuickExitButton />
       <BetaFeedback enabled />

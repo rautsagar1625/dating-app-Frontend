@@ -8,7 +8,6 @@ import { MainTabParamList } from './types';
 import BrowseScreen from '../screens/BrowseScreen';
 import CrushesScreen from '../screens/CrushesScreen';
 import ChatListScreen from '../screens/ChatListScreen';
-import NotificationsScreen from '../screens/NotificationsScreen';
 import MyProfileScreen from '../screens/MyProfileScreen';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { COLORS, FONTS, SHADOWS } from '../utils/theme';
@@ -28,11 +27,10 @@ function withTabErrorBoundary(Screen: React.ComponentType<any>, tabName: string)
   };
 }
 
-const BrowseWithBoundary        = withTabErrorBoundary(BrowseScreen,        'Browse');
-const CrushesWithBoundary       = withTabErrorBoundary(CrushesScreen,       'Crushes');
-const ChatListWithBoundary      = withTabErrorBoundary(ChatListScreen,       'Messages');
-const NotificationsWithBoundary = withTabErrorBoundary(NotificationsScreen,  'Notifications');
-const MyProfileWithBoundary     = withTabErrorBoundary(MyProfileScreen,      'MyProfile');
+const BrowseWithBoundary   = withTabErrorBoundary(BrowseScreen,   'Browse');
+const CrushesWithBoundary  = withTabErrorBoundary(CrushesScreen,  'Crushes');
+const ChatListWithBoundary = withTabErrorBoundary(ChatListScreen,  'Messages');
+const MyProfileWithBoundary = withTabErrorBoundary(MyProfileScreen, 'MyProfile');
 
 // ── TabIcon ────────────────────────────────────────────────────────────────
 
@@ -125,7 +123,6 @@ const tabStyles = StyleSheet.create({
 // ── MainTabs ───────────────────────────────────────────────────────────────
 
 export default function MainTabs() {
-  const unreadCount     = useNotificationStore((s) => s.unreadCount);
   const chatUnreadCount = useNotificationStore((s) => s.chatUnreadCount);
   const incrementChatUnread = useNotificationStore((s) => s.incrementChatUnread);
   const qc = useQueryClient();
@@ -228,23 +225,7 @@ export default function MainTabs() {
         }}
       />
 
-      {/* 4. Notifications */}
-      <Tab.Screen
-        name="Notifications"
-        component={NotificationsWithBoundary}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon
-              icon={<Ionicons name="notifications" size={20} color={COLORS.white} />}
-              label="Activity"
-              focused={focused}
-              badge={unreadCount > 0 ? (unreadCount > 99 ? '99+' : unreadCount) : undefined}
-            />
-          ),
-        }}
-      />
-
-      {/* 5. Profile */}
+      {/* 4. Profile */}
       <Tab.Screen
         name="MyProfile"
         component={MyProfileWithBoundary}

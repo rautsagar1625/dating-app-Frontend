@@ -25,6 +25,7 @@ import { SkeletonBone, UserCardSkeleton } from '../components/SkeletonLoader';
 import { COLORS, FONTS, SPACING, RADIUS, SHADOWS } from '../utils/theme';
 import { usersApi, likesApi, type BrowseUser } from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import { useNotificationStore } from '../store/notificationStore';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 type Nav = NativeStackNavigationProp<AppStackParamList>;
@@ -88,7 +89,8 @@ function GridSkeleton() {
 export default function BrowseScreen() {
   const navigation = useNavigation<Nav>();
   const qc = useQueryClient();
-  const currentUser = useAuthStore((s) => s.user);
+  const currentUser  = useAuthStore((s) => s.user);
+  const unreadCount  = useNotificationStore((s) => s.unreadCount);
   const haptics = useHaptics();
 
   const [activeFilter, setActiveFilter] = useState<ChipFilter>('All');
@@ -302,6 +304,24 @@ export default function BrowseScreen() {
                   color={COLORS.white}
                 />
               </LinearGradient>
+            </AnimatedPressable>
+
+            {/* Activity / Notifications bell */}
+            <AnimatedPressable
+              style={styles.viewToggle}
+              onPress={() => navigation.navigate('Notifications' as never)}
+              haptic
+            >
+              <View style={styles.viewToggleGradient}>
+                <Ionicons name="notifications-outline" size={18} color={COLORS.white} />
+                {unreadCount > 0 && (
+                  <View style={styles.filterBadge}>
+                    <Text style={styles.filterBadgeText}>
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </Text>
+                  </View>
+                )}
+              </View>
             </AnimatedPressable>
           </View>
         </View>
@@ -537,6 +557,8 @@ const styles = StyleSheet.create({
     width: 40, height: 40,
     alignItems: 'center', justifyContent: 'center',
     borderRadius: RADIUS.md,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    position: 'relative',
   },
   filterBadge: {
     position: 'absolute', top: -4, right: -4,

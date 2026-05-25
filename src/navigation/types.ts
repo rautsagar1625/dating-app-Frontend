@@ -27,14 +27,14 @@ export type AppStackParamList = {
   Notebook:             undefined;
   News:                 undefined;
   Gifts:                undefined;
+  Notifications:        undefined;
 };
 
 export type MainTabParamList = {
-  Browse:        undefined;
-  Crushes:       undefined;
-  Messages:      undefined;
-  Notifications: undefined;
-  MyProfile:     undefined;
+  Browse:    undefined;
+  Crushes:   undefined;
+  Messages:  undefined;
+  MyProfile: undefined;
 };
 
 export type RootStackParamList = {
