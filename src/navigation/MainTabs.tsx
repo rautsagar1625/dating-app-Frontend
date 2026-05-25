@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet, AppState } from 'react-native';
+import { View, Text, StyleSheet, AppState, Dimensions } from 'react-native';
+
+const TAB_COUNT   = 4;
+const TAB_WIDTH   = Dimensions.get('window').width / TAB_COUNT;
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useQueryClient } from '@tanstack/react-query';
@@ -77,14 +80,14 @@ function TabIcon({ icon, label, focused, badge }: TabIconProps) {
 
 const tabStyles = StyleSheet.create({
   wrapper: {
+    width: TAB_WIDTH,
     alignItems: 'center',
-    paddingTop: 4,
-    width: 72,
-    gap: 3,
+    justifyContent: 'center',
+    gap: 4,
   },
   iconContainer: {
-    width: 44,
-    height: 34,
+    width: 46,
+    height: 32,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
@@ -94,10 +97,11 @@ const tabStyles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   label: {
-    fontSize: FONTS.sizes.xs,
+    fontSize: 10,
     color: COLORS.textMuted,
     textAlign: 'center',
     fontWeight: '500',
+    letterSpacing: 0.2,
   },
   labelActive: {
     color: COLORS.white,
@@ -109,15 +113,15 @@ const tabStyles = StyleSheet.create({
     right: -6,
     backgroundColor: COLORS.pink,
     borderRadius: 8,
-    minWidth: 18,
-    height: 18,
+    minWidth: 16,
+    height: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: 3,
     borderWidth: 1.5,
     borderColor: COLORS.background,
   },
-  badgeText: { color: COLORS.white, fontSize: 9, fontWeight: '800' },
+  badgeText: { color: COLORS.white, fontSize: 8, fontWeight: '800' },
 });
 
 // ── MainTabs ───────────────────────────────────────────────────────────────
@@ -160,13 +164,16 @@ export default function MainTabs() {
           backgroundColor: COLORS.card,
           borderTopColor:  COLORS.border,
           borderTopWidth:  1,
-          height:          72,
+          height:          68,
           paddingBottom:   0,
           paddingTop:      0,
+          paddingHorizontal: 0,
         },
         tabBarItemStyle: {
+          flex:            1,
+          height:          68,
           paddingVertical: 0,
-          height:          72,
+          paddingHorizontal: 0,
           justifyContent:  'center',
           alignItems:      'center',
         },
