@@ -28,8 +28,8 @@ export type AppStackParamList = {
 export type MainTabParamList = {
   Browse:        undefined;
   Crushes:       undefined;
+  Messages:      undefined;
   Notifications: undefined;
-  Wallet:        undefined;
   MyProfile:     undefined;
 };
 

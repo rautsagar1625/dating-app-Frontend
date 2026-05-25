@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity,
-  RefreshControl, ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +16,7 @@ import { AppStackParamList } from '../navigation/types';
 import { chatApi, type ChatListItem } from '../services/api';
 import { getSocket } from '../services/socket';
 import { useAuthStore } from '../store/authStore';
+import { useNotificationStore } from '../store/notificationStore';
 import { toast } from '../services/toast';
 import { EmptyState } from '../components/EmptyState';
 import { SkeletonLoader } from '../components/SkeletonLoader';
@@ -81,25 +82,33 @@ export default function ChatListScreen({ navigation }: Props) {
   const [loading, setLoading]     = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const currentUser = useAuthStore((s) => s.user);
+  const { setChatUnreadCount, clearChatUnread } = useNotificationStore();
 
   const fetchConversations = useCallback(async (quiet = false) => {
     if (!quiet) setLoading(true);
     try {
       const res = await chatApi.getChats();
-      setConversations(res.data.data ?? []);
+      const data = res.data.data ?? [];
+      setConversations(data);
+      // Count conversations with unread messages from the other user
+      const unread = data.filter((c: ChatListItem) =>
+        c.lastMessage && c.lastMessage.senderId !== currentUser?.id
+      ).length;
+      setChatUnreadCount(unread);
     } catch {
       toast.show('Could not refresh conversations', 'error');
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [currentUser?.id, setChatUnreadCount]);
 
   useFocusEffect(
     useCallback(() => {
       fetchConversations();
+      clearChatUnread(); // Clear badge when user opens the tab
       analytics.screen('ChatList');
-    }, [fetchConversations]),
+    }, [fetchConversations, clearChatUnread]),
   );
 
   // Real-time: listen for new messages and move conversation to top
@@ -124,7 +133,7 @@ export default function ChatListScreen({ navigation }: Props) {
 
     socket.on('new_message', handleNewMessage);
     return () => { socket.off('new_message', handleNewMessage); };
-  }, [fetchConversations]);
+  }, [fetchConversations, currentUser?.id]);
 
   const handleOpenChat = (item: ChatListItem) => {
     navigation.navigate('Chat', {
@@ -146,7 +155,11 @@ export default function ChatListScreen({ navigation }: Props) {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Messages</Text>
-          <TouchableOpacity style={styles.headerBtn}>
+          <TouchableOpacity
+            style={styles.headerBtn}
+            onPress={() => navigation.navigate('MainTabs' as never)}
+            activeOpacity={0.7}
+          >
             <Ionicons name="create-outline" size={22} color={COLORS.text} />
           </TouchableOpacity>
         </View>

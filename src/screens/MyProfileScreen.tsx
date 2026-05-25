@@ -37,15 +37,16 @@ type Nav = CompositeNavigationProp<
 >;
 
 type MenuItem = {
-  iconName: 'notifications-outline' | 'lock-closed-outline' | 'help-circle-outline' | 'star-outline' | 'shield-checkmark-outline';
+  iconName: 'diamond-outline' | 'notifications-outline' | 'lock-closed-outline' | 'help-circle-outline' | 'star-outline' | 'shield-checkmark-outline';
   label: string;
   sublabel: string;
   screen?: keyof AppStackParamList;
 };
 
 const MENU_ITEMS: MenuItem[] = [
+  { iconName: 'diamond-outline',       label: 'Subscription',     sublabel: 'Manage plan & credits',   screen: 'Subscription' },
   { iconName: 'notifications-outline', label: 'Notifications',    sublabel: 'Manage alerts' },
-  { iconName: 'lock-closed-outline',   label: 'Privacy Settings', sublabel: 'Control who sees you', screen: 'PrivacySettings' },
+  { iconName: 'lock-closed-outline',   label: 'Privacy Settings', sublabel: 'Control who sees you',    screen: 'PrivacySettings' },
   { iconName: 'help-circle-outline',   label: 'Help & Support',   sublabel: 'Get assistance' },
   { iconName: 'star-outline',          label: 'Rate Velvet',      sublabel: 'Share your experience' },
 ];
